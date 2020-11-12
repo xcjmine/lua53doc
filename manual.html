@@ -33,7 +33,7 @@ Lua.org, PUC-Rio 版权所有 &copy; 2015 ，
 &middot;
 <a href="contents.html#index">索引</A>
 &middot;
-<A HREF="term.html">中英术语对照表</A>
+<A HREF="glossary.html">中英术语对照表</A>
 
 <!-- ====================================================================== -->
 <p>
@@ -43,43 +43,41 @@ Lua.org, PUC-Rio 版权所有 &copy; 2015 ，
 
 
 
-<h1>1 &ndash; <a name="1">概要</a></h1>
+<h1>1 &ndash; <a name="1">简介</a></h1>
 
 <p>
-Lua 是一门扩展式程序设计语言，它被设计成支持通用过程式编程，并有相关数据描述设施。
-同时也很好的支持了面向对象编程、函数式编程、数据驱动式编程。
+Lua 是一门扩展式程序设计语言，被设计成支持通用过程式编程，并有相关数据描述设施。
+同时对面向对象编程、函数式编程和数据驱动式编程也提供了良好的支持。
 它作为一个强大、轻量的嵌入式脚本语言，可供任何需要的程序使用。
-它以库形式实现，用 <em>clean C</em> 写成。
-所谓 clean C ，指的是标准 C 和 C++ 间共通的一个子集。
+Lua 由 <em>clean C（标准 C 和 C++ 间共通的子集）</em> 实现成一个库。
 
 
 <p>
-作为一个扩展式语言，Lua 没有 "main" 程序的概念：
+作为一门扩展式语言，Lua 没有 "main" 程序的概念：
 它只能 <em>嵌入</em> 一个宿主程序中工作，
-这个宿主程序被称作 <em>被嵌入的程序</em> 或简称为 <em>宿主</em> 。 
-宿主程序可以调用函数执行一小段 Lua 代码，可以读写 Lua 变量，可以注入 C 函数让 Lua 代码调用。
-依靠这些 C 函数，在各种不同的领域中，都可以将拥有相同句法结构的 Lua 定制为该领域下的编程语言。
-Lua 的官方发布版包含了一个叫做 <code>lua</code> 的简单的宿主程序，
-它用 Lua 库实现了一个完整的独立 Lua 解释器。
-你可以把它作交互式应用或用于批处理。
+该宿主程序被称为 <em>被嵌入程序</em> 或者简称 <em>宿主</em> 。 
+宿主程序可以调用函数执行一小段 Lua 代码，可以读写 Lua 变量，可以注册 C 函数让 Lua 代码调用。
+依靠 C 函数，Lua 可以共享相同的语法框架来定制编程语言，从而适用不同的领域。
+Lua 的官方发布版包含一个叫做 <code>lua</code> 的宿主程序示例，
+它是一个利用 Lua 库实现的完整独立的 Lua 解释器，可用于交互式应用或批处理。
 
 
 <p>
-Lua 是一个自由软件，它的使用许可证决定了它的使用过程没有任何担保。
-这份手册中描述的实现，可以在 Lua 的官方网站 <code>www.lua.org</code> 找到。
+Lua 是一个自由软件，其使用许可证决定了它的使用过程无需任何担保。
+本手册所描述的实现可以在 Lua 的官方网站 <code>www.lua.org</code> 找到。
 
 
 <p>
-跟其它的许多参考手册一样，这份文档有些地方比较枯燥。
-Lua 设计决定方面的讨论，
+与其它的许多参考手册一样，这份文档有些地方比较枯燥。
+关于 Lua 背后的设计思想，
 可以看看 Lua 网站上提供的技术论文。
-有关用 Lua 编程的细节介绍，
-可以读一下 Roberto 的书，<em>Programming in Lua</em>。
+至于用 Lua 编程的细节介绍，
+请参阅 Roberto 的书，<em>Programming in Lua</em>。
 
 <h1>2 &ndash; <a name="2">基本概念</a></h1>
 
 <p>
-这一章描述了语言的基本概念。
+本章描述了语言的基本概念。
 
 
 
@@ -89,98 +87,94 @@ Lua 设计决定方面的讨论，
 Lua 是一门<em>动态类型语言</em>。
 这意味着变量没有类型；只有值才有类型。
 语言中不设类型定义。
-所有的值都带有自己的类型。
+所有的值携带自己的类型。
 
 
 <p>
 Lua 中所有的值都是 <em>一等公民</em>。
-这意味着所有的值都可以保存在变量中、
-当作参数传递给其它函数、以及作为返回值出现。
+这意味着所有的值均可保存在变量中、
+当作参数传递给其它函数、以及作为返回值。
 
 
 <p>
 Lua 中有八种基本类型：
-<em>nil</em>, <em>boolean</em>, <em>number</em>,
-<em>string</em>, <em>function</em>, <em>userdata</em>,
-<em>thread</em>, and <em>table</em>.
+<em>nil</em>、<em>boolean</em>、<em>number</em>、<em>string</em>、<em>function</em>、<em>userdata</em>、
+<em>thread</em> 和 <em>table</em>。
 <em>Nil</em> 是值 <b>nil</b> 的类型，
-它的主要特征就是和其它值区别开；
-它通常用来表示一个有意义的值不存在时的状态。
+其主要特征就是和其它值区别开；通常用来表示一个有意义的值不存在时的状态。
 <em>Boolean</em> 是 <b>false</b> 与 <b>true</b> 两个值的类型。
 <b>nil</b> 和 <b>false</b> 都会导致条件判断为假；
-所有其它的值都表现为真。
-<em>Number</em> 代表了整数或实数（浮点数）。
+而其它任何值都表示为真。
+<em>Number</em> 代表了整数和实数（浮点数）。
 <em>String</em> 表示一个不可变的字节序列。
 
-Lua 是 8 位友好的：
-字符串可以包含任意 8 位值，
-其中包括零 ('<code>\0</code>') 。
-Lua 的字符串编码无关；
-它不理会字符串里的内容到底是什么。
+Lua 对 8 位是友好的：
+字符串可以容纳任意 8 位值，
+其中包含零 ('<code>\0</code>') 。
+Lua 的字符串与编码无关；
+它不关心字符串中具体内容。
 
 
 <p>
-<em>number</em> 类型有两种内部呈现方式，
-一种称为 <em>整数</em> 另一种称为 <em>浮点数</em>。
-对于使用哪种内部形式，Lua 有明确的规则，
-但它也按需（参见 <a href="#3.4.3">&sect;3.4.3</a>）自动转换。
-因此，程序员需要选择完全忽略其间的差异
-还是对如何在内部呈现数字做完全的控制。
-标准 Lua 使用 64 位整数以及双精度（64 位）浮点数，
-但你可以把 Lua 编译成使用 32 位整数及单精度（32 位）浮点数。
-以 32 位表示数字对小型机器以及嵌入式系统特别有意义。
+<em>number</em> 类型有两种内部表现方式，
+ <em>整数</em> 和 <em>浮点数</em>。
+对于何时使用哪种内部形式，Lua 有明确的规则，
+但它也按需（参见 <a href="#3.4.3">&sect;3.4.3</a>）作自动转换。
+因此，程序员多数情况下可以选择忽略整数与浮点数之间的差异或者假设完全控制每个数字的内部表现方式。
+标准 Lua 使用 64 位整数和双精度（64 位）浮点数，
+但你也可以把 Lua 编译成使用 32 位整数和单精度（32 位）浮点数。
+以 32 位表示数字对小型机器以及嵌入式系统特别合适。
 （参见 <code>luaconf.h</code> 文件中的宏 <code>LUA_32BITS</code> 。）
 
 
 <p>
 Lua 可以调用（以及操作）用 Lua 或 C （参见 <a href="#3.4.10">&sect;3.4.10</a>）编写的函数。
-这两种函数有统一的类型 <em>function</em>。
+这两种函数有统一类型 <em>function</em>。
 
 
 <p>
 <em>userdata</em> 类型允许将 C 中的数据保存在 Lua 变量中。
-用户数据类型的值是一个内存块。
+用户数据类型的值是一个内存块，
 有两种用户数据：
-<em>完全用户数据</em> 指一块由 Lua 管理的内存对应的对象；
-<em>轻量用户数据</em> 则指一个简单的 C 指针。
-用户数据在 Lua 中没有预定义的操作，你只能对它进行赋值操作及判断两个用户数据是否相同。
-使用 <em>元表</em> 的话，程序员可以给完全用户数据定义一系列的操作
+<em>完全用户数据</em> ，指一块由 Lua 管理的内存对应的对象；
+<em>轻量用户数据</em> ，则指一个简单的 C 指针。
+用户数据在 Lua 中除了赋值与相等性判断之外没有其他预定义的操作。
+通过使用 <em>元表</em> ，程序员可以给完全用户数据定义一系列的操作
 （参见 <a href="#2.4">&sect;2.4</a>）。
-在 Lua 代码中，你不能查和修改一个用户数据的值，这些工作只能通过 C API 完成。
+你只能通过 C API 而无法在 Lua 代码中创建或者修改用户数据的值，
 这保证了数据仅被宿主程序所控制。
 
 
 <p>
-<em>thread</em> 类型表示了一个独立的执行序列，它被用于实现协程
+<em>thread</em> 类型表示了一个独立的执行序列，被用于实现协程
 （参见 <a href="#2.6">&sect;2.6</a>）。
-Lua 线程并非操作系统线程。
-Lua 为所有的系统，包括那些不提供原生线程支持的系统，提供了协程支持。
+Lua 的线程与操作系统的线程毫无关系。
+Lua 为所有的系统，包括那些不支持原生线程的系统，提供了协程支持。
 
 
 <p>
 <em>table</em> 是一个关联数组，
-也就是说，这个数组不仅仅以数做索引，除了 <b>nil</b> 和 NaN 之外的 Lua 值
+也就是说，这个数组不仅仅以数字做索引，除了 <b>nil</b> 和 NaN 之外的所有 Lua 值
 都可以做索引。
 （<em>Not a Number</em> 是一个特殊的数字，它用于表示未定义或表示不了的运算结果，比如 <code>0/0</code>。）
 表可以是 <em>异构</em> 的；
-也就是说，表内可以包含（除 <b>nil</b> 外的任何类型的值）。
+也就是说，表内可以包含任何类型的值（ <b>nil</b> 除外）。
 任何键的值若为 <b>nil</b> 就不会被记入表结构内部。
-换句话说，对于表内不存在的键，都对应着值 <b>nil</b> 。
+换言之，对于表内不存在的键，都对应着值 <b>nil</b> 。
 
 
 <p>
-表是 Lua 中唯一的数据结构；
-它可被用于表示普通数组、序列、符号表、集合、记录、图、树、等等。
+表是 Lua 中唯一的数据结构，
+它可被用于表示普通数组、序列、符号表、集合、记录、图、树等等。
 对于记录，Lua 使用域名作为索引。
 语言提供了 <code>a.name</code> 这样的语法糖来替代
 <code>a["name"]</code> 这种写法以方便记录这种结构的使用。
-有多种方式在 Lua 中创建表结构（参见 <a href="#3.4.9">&sect;3.4.9</a>）。
+在 Lua 中有多种便利的方式创建表（参见 <a href="#3.4.9">&sect;3.4.9</a>）。
 
 
 <p>
-我们使用 <em>序列</em> 这个术语来表示一个用 {1..<em>n</em>} 的正整数集
-做索引的表。这里的非负整数 <em>n</em> 被称为这个序列的长度
-（参见 <a href="#3.4.7">&sect;3.4.7</a>）。
+我们使用 <em>序列</em> 这个术语来表示一个用 {1..<em>n</em>} 的正整数集做索引的表。
+这里的非负整数 <em>n</em> 被称为该序列的长度（参见 <a href="#3.4.7">&sect;3.4.7</a>）。
 
 
 <p>
@@ -196,9 +190,9 @@ Lua 为所有的系统，包括那些不提供原生线程支持的系统，提�
 （即不通过元方法的比较），
 表达式 <code>a[i]</code> 与 <code>a[j]</code>
 表示了表中相同的元素。
-特别指出：一个可以完全表达为整数的浮点数和对应的整数相等
+特别指出：一个可以完全表示为整数的浮点数和对应的整数相等
 （例如：<code>1.0 == 1</code>）。
-为了消除歧义，当一个可以完全表达为整数的浮点数做为键值时，
+为了消除歧义，当一个可以完全表示为整数的浮点数做为键值时，
 都会被转换为对应的整数储存。
 例如，当你写 <code>a[2.0] = true</code> 时，
 实际被插入表中的键是整数 <code>2</code> 。
@@ -209,7 +203,7 @@ Lua 为所有的系统，包括那些不提供原生线程支持的系统，提�
 <p>
 表、函数、线程、以及完全用户数据在 Lua 中被称为 <em>对象</em>：
 变量并不真的 <em>持有</em> 它们的值，而仅保存了对这些对象的 <em>引用</em>。
-赋值、参数传递、函数返回，都是针对引用而不是针对值的操作；
+赋值、参数传递、函数返回，都是针对引用而不是针对值的操作，
 这些操作均不会做任何形式的隐式拷贝。
 
 
@@ -226,13 +220,13 @@ Lua 为所有的系统，包括那些不提供原生线程支持的系统，提�
 后面在 <a href="#3.2">&sect;3.2</a> 以及 <a href="#3.3.3">&sect;3.3.3</a> 会讨论，
 引用一个叫 <code>var</code> 的自由名字（指在任何层级都未被声明的名字）
 在句法上都被翻译为 <code>_ENV.var</code> 。
-此外，每个被编译的 Lua 代码块都会有一个额外的局部变量叫 <code>_ENV</code>
+此外，每个被编译的 Lua 代码块都会有一个外部的局部变量叫 <code>_ENV</code>
 （参见 <a href="#3.3.2">&sect;3.3.2</a>），
 因此，<code>_ENV</code> 这个名字永远都不会成为一个代码块中的自由名字。
 
 
 <p>
-在转译那些自由名字时，<code>_ENV</code> 是否是那个额外的局部变量无所谓。
+在转译那些自由名字时，<code>_ENV</code> 是否是那个外部的局部变量无所谓。
 <code>_ENV</code> 和其它你可以使用的变量名没有区别。
 这里特别指出，你可以定义一个新变量或指定一个参数叫这个名字。
 当编译器在转译自由名字时所用到的 <code>_ENV</code> ，
@@ -266,47 +260,44 @@ Lua 保有一个被称为 <em>全局环境</em> 特别环境。它被保存在 C
 <h2>2.3 &ndash; <a name="2.3">错误处理</a></h2>
 
 <p>
-Lua 作为一门嵌入式语言，
-所有的 Lua 行为都始于宿主程序的 C 代码中对于 Lua 库里某函数的一次调用。
-（当你使用 Lua 独立版本时，<code>lua</code> 程序就是那个宿主程序。）
-在编译或运行一个 Lua 代码块时，无论发生任何错误，
-控制权都返还给宿主。接下来可以针对情况来采取恰当的措施
-（比如打印错误消息）。
+由于 Lua 是一门嵌入式扩展语言，其所有行为均源于宿主程序中 C 代码对某个 Lua 库函数的调用。
+（单独使用 Lua 时，<code>lua</code> 程序就是宿主程序。）
+所以，在编译或运行 Lua 代码块的过程中，无论何时发生错误，
+控制权都返回给宿主，由宿主负责采取恰当的措施（比如打印错误消息）。
 
 
 <p>
-Lua 代码中可以通过调用 <a href="#pdf-error"><code>error</code></a> 函数来显式的抛出一个错误。
+可以在 Lua 代码中调用 <a href="#pdf-error"><code>error</code></a> 函数来显式地抛出一个错误。
 如果你需要在 Lua 中捕获这些错误，
-你可以使用 <a href="#pdf-pcall"><code>pcall</code></a> 或
+可以使用 <a href="#pdf-pcall"><code>pcall</code></a> 或
 <a href="#pdf-xpcall"><code>xpcall</code></a>
-以 <em>保护模式</em> 来调用一个函数。
+在 <em>保护模式</em> 下调用一个函数。
 
 
 <p>
-无论何时错误发生，都会产生一个携带有错误信息的 <em>错误对象</em> 
-（也被称为 <em>错误消息</em>）。
-Lua 本身只会产生字符串类型的错误对象，
-但你的程序可以为一个错误抛出任何类型的错误对象。
-这就看 Lua 程序或你的宿主如何处理这些错误对象了。
+无论何时出现错误，都会抛出一个携带错误信息的 <em>错误对象</em> 
+（<em>错误消息</em>）。
+Lua 本身只会为错误生成字符串类型的错误对象，
+但你的程序可以为错误生成任何类型的错误对象，
+这就看你的 Lua 程序或宿主程序如何处理这些错误对象。
 
 <p>
-当你使用 <a href="#pdf-xpcall"><code>xpcall</code></a> 或
+使用 <a href="#pdf-xpcall"><code>xpcall</code></a> 或
 <a href="#lua_pcall"><code>lua_pcall</code></a> 时，
-你应当给出一个 <em>消息处理器</em> 用于发生错误时的处理流程。
-这个处理器函数会被传入原始的错误消息，并应返回一个新的错误消息。
+你应该提供一个 <em>消息处理函数</em> 用于错误抛出时调用。
+该函数需接收原始的错误消息，并返回一个新的错误消息。
 它在错误发生后栈尚未展开时调用，
-因此它可以通过栈来收集更多的信息。
-例如它可以通过探知栈来创建一组栈回溯信息。
-这个处理器函数也被保护模式调用以保护；
-因此在处理器函数内发生的错误会再次调用它。
-如果递归调用太深，Lua 会打破递归并返回一个恰当的消息。
+因此可以利用栈来收集更多的信息，
+比如通过探知栈来创建一组栈回溯信息。
+同时，该处理函数也处于保护模式下，所以该函数内发生的错误会再次触发它（递归）。
+如果递归太深，Lua 会终止调用并返回一个合适的消息。
 
 
 
 <h2>2.4 &ndash; <a name="2.4">元表及元方法</a></h2>
 
 <p>
-Lua 中的每个值都可以用一个 <em>元表</em>。
+Lua 中的每个值都可以有一个 <em>元表</em>。
 这个 <em>元表</em> 就是一个普通的 Lua 表，
 它用于定义原始值在特定操作下的行为。
 如果你想改变一个值在特定操作下的行为，你可以在它的元表中设置对应域。
@@ -316,20 +307,26 @@ Lua 会检查该值的元表中的 "<code>__add</code>" 域下的函数。
 
 
 <p>
-元表中的键对应着不同的 <em>事件</em> 名；
+在元表中事件的键值是一个双下划线（<code>__</code>）加事件名的字符串；
 键关联的那些值被称为 <em>元方法</em>。
-在上面那个例子中引用的事件为 <code>"add"</code> ，
-完成加操作的那个函数就是元方法。
+在上一个例子中，<code>__add</code>  就是键值，
+对应的元方法是执行加操作的函数。
 
 
 <p>
 你可以用 <a href="#pdf-getmetatable"><code>getmetatable</code></a> 函数
 来获取任何值的元表。
+Lua 使用直接访问的方式从元表中查询元方法（参见<a href="#pdf-rawget"><code>rawget</code></a>）。
+所以，从对象 <code>o</code> 中获取事件 <code>ev</code> 的元方法等价于下面的代码：
+
+<pre>
+     rawget(getmetatable(<em>o</em>) or {}, "__<em>ev</em>")
+</pre>
 
 
 <p>
-使用 <a href="#pdf-setmetatable"><code>setmetatable</code></a> 
-来替换一张表的元表。在 Lua 中，你不可以改变其它类型的值的元表
+你可以使用 <a href="#pdf-setmetatable"><code>setmetatable</code></a> 
+来替换一张表的元表。在 Lua 中，你不可以改变表以外其它类型的值的元表
 （除非你使用调试库（参见<a href="#6.10">&sect;6.10</a>））；
 若想改变这些非表类型的值的元表，请使用 C API。
 
@@ -353,19 +350,6 @@ Lua 会检查该值的元表中的 "<code>__add</code>" 域下的函数。
 
 
 <p>
-接下来会给出一张元表可以控制的事件的完整列表。
-每个操作都用对应的事件名来区分。
-每个事件的键名用加有 '<code>__</code>' 前缀的字符串来表示；
-例如 "add" 操作的键名为字符串 "<code>__add</code>"。
-注意、Lua 从元表中直接获取元方法；
-访问元表中的元方法永远不会触发另一次元方法。
-下面的代码模拟了 Lua 从一个对象 <code>obj</code> 中获取一个元方法的过程：
-
-<pre>
-     rawget(getmetatable(obj) or {}, "__" .. event_name)
-</pre>
-
-<p>
 对于一元操作符（取负、求长度、位反），
 元方法调用的时候，第二个参数是个哑元，其值等于第一个参数。
 这样处理仅仅是为了简化 Lua 的内部实现
@@ -373,10 +357,16 @@ Lua 会检查该值的元表中的 "<code>__add</code>" 域下的函数。
 这个行为有可能在将来的版本中移除。
 （使用这个额外参数的行为都是不确定的。）
 
+<p>
+接下来是元表可以控制的事件的详细列表。
+每个操作都用对应的事件名来区分。
+每个事件的键名用加有 '<code>__</code>' 前缀的字符串来表示；
+例如 "add" 操作的键名为字符串 "<code>__add</code>"。
+
 
 <ul>
 
-<li><b>"add": </b>
+<li><b><code>__add</code>: </b>
 <code>+</code> 操作。
 
 如果任何不是数字的值（包括不能转换为数字的字符串）做加法，
@@ -387,52 +377,52 @@ Lua 就会接着检查第二个操作数。
 一旦 Lua 找到了元方法，
 它将把两个操作数作为参数传入元方法，
 元方法的结果（调整为单个值）作为这个操作的结果。
-如果找不到元方法，将抛出一个操作。
+如果找不到元方法，将抛出一个错误。
 </li>
 
-<li><b>"sub": </b>
+<li><b><code>__sub</code>: </b>
 <code>-</code> 操作。
 
 行为和 "add" 操作类似。
 </li>
 
-<li><b>"mul": </b>
+<li><b><code>__mul</code>: </b>
 <code>*</code> 操作。
 
 行为和 "add" 操作类似。
 </li>
 
-<li><b>"div": </b>
+<li><b><code>__div</code>: </b>
 <code>/</code> 操作。
 
 行为和 "add" 操作类似。
 </li>
 
-<li><b>"mod": </b>
+<li><b><code>__mod</code>: </b>
 <code>%</code> 操作。
 
 行为和 "add" 操作类似。
 </li>
 
-<li><b>"pow": </b>
+<li><b><code>__pow</code>: </b>
 <code>^</code> （次方）操作。
 
 行为和 "add" 操作类似。
 </li>
 
-<li><b>"unm": </b>
+<li><b><code>__unm</code>: </b>
 <code>-</code> （取负）操作。
 
 行为和 "add" 操作类似。
 </li>
 
-<li><b>"idiv": </b>
+<li><b><code>__idiv</code>: </b>
 <code>//</code> （向下取整除法）操作。
 
 行为和 "add" 操作类似。
 </li>
 
-<li><b>"band": </b>
+<li><b><code>__band</code>: </b>
 <code>&amp;</code> （按位与）操作。
 
 行为和 "add" 操作类似，
@@ -440,37 +430,37 @@ Lua 就会接着检查第二个操作数。
 （参见 <a href="#3.4.3">&sect;3.4.3</a>）尝试取元方法。
 </li>
 
-<li><b>"bor": </b>
+<li><b><code>__bor</code>: </b>
 <code>|</code> （按位或）操作。
 
 行为和 "band" 操作类似。
 </li>
 
-<li><b>"bxor": </b>
+<li><b><code>__bxor</code>: </b>
 <code>~</code> （按位异或）操作。
 
 行为和 "band" 操作类似。
 </li>
 
-<li><b>"bnot": </b>
+<li><b><code>__bnot</code>: </b>
 <code>~</code> （按位非）操作。
 
 行为和 "band" 操作类似。
 </li>
 
-<li><b>"shl": </b>
+<li><b><code>__shl</code>: </b>
 <code>&lt;&lt;</code> （左移）操作。
 
 行为和 "band" 操作类似。
 </li>
 
-<li><b>"shr": </b>
+<li><b><code>__shr</code>: </b>
 <code>&gt;&gt;</code> （右移）操作。
 
 行为和 "band" 操作类似。
 </li>
 
-<li><b>"concat": </b>
+<li><b><code>__concat</code>: </b>
 <code>..</code> （连接）操作。
 
 行为和 "add" 操作类似，
@@ -478,7 +468,7 @@ Lua 就会接着检查第二个操作数。
 也不是数字（数字总能转换为对应的字符串）的情况下尝试元方法。
 </li>
 
-<li><b>"len": </b>
+<li><b><code>__len</code>: </b>
 <code>#</code> （取长度）操作。
 
 如果对象不是字符串，Lua 会尝试它的元方法。
@@ -489,7 +479,7 @@ Lua 使用表的取长度操作（参见 <a href="#3.4.7">&sect;3.4.7</a>）。
 其它情况，均抛出错误。
 </li>
 
-<li><b>"eq": </b>
+<li><b><code>__eq</code>: </b>
 <code>==</code> （等于）操作。
 
 和 "add" 操作行为类似，
@@ -498,7 +488,7 @@ Lua 使用表的取长度操作（参见 <a href="#3.4.7">&sect;3.4.7</a>）。
 调用的结果总会被转换为布尔量。
 </li>
 
-<li><b>"lt": </b>
+<li><b><code>__lt</code>: </b>
 <code>&lt;</code> （小于）操作。
 
 和 "add" 操作行为类似，
@@ -506,7 +496,7 @@ Lua 使用表的取长度操作（参见 <a href="#3.4.7">&sect;3.4.7</a>）。
 调用的结果总会被转换为布尔量。
 </li>
 
-<li><b>"le": </b>
+<li><b><code>__le</code>: </b>
 <code>&lt;=</code> （小于等于）操作。
 
 和其它操作不同，
@@ -517,7 +507,7 @@ Lua 使用表的取长度操作（参见 <a href="#3.4.7">&sect;3.4.7</a>）。
 而其它比较操作符类似，其结果会被转换为布尔量。
 </li>
 
-<li><b>"index": </b>
+<li><b><code>__index</code>: </b>
 索引 <code>table[key]</code>。
 
 当 <code>table</code> 不是表或是表 <code>table</code> 中不存在
@@ -533,7 +523,7 @@ Lua 使用表的取长度操作（参见 <a href="#3.4.7">&sect;3.4.7</a>）。
 所以这次索引有可能引发另一次元方法。）
 </li>
 
-<li><b>"newindex": </b>
+<li><b><code>__newindex</code>: </b>
 索引赋值 <code>table[key] = value</code> 。
 
 和索引事件类似，它发生在
@@ -559,7 +549,7 @@ Lua 就不再做最初的赋值操作。
 来做赋值。）
 </li>
 
-<li><b>"call": </b>
+<li><b><code>__call</code>: </b>
 函数调用操作 <code>func(args)</code>。
 
 当 Lua 尝试调用一个非函数的值的时候会触发这个事件
@@ -686,7 +676,7 @@ Lua 会检查每个链表中的对象的 <code>__gc</code>
 当你关闭一个状态机（参见 <a href="#lua_close"><code>lua_close</code></a>），
 Lua 将调用所有被标记了需要触发终结器对象的终结过程，
 其次序为标记次序的逆序。
-在这个过程中，任何终结器再次标记对象的行为都会不会生效。
+在这个过程中，任何终结器再次标记对象的行为都不会生效。
 
 
 
@@ -703,7 +693,7 @@ Lua 将调用所有被标记了需要触发终结器对象的终结过程，
 
 <p>
 一张弱表可以有弱键或是弱值，也可以键值都是弱引用。
-仅含有弱键的表允许收集器回收它的键，但会阻止对值所指的对象被回收。
+含有弱值的表允许收集器回收它的值，但会阻止收集器回收它的键。
 若一张表的键值均为弱引用，
 那么收集器可以回收其中的任意键和值。
 任何情况下，只要键或值的任意一项被回收，
@@ -758,34 +748,35 @@ Lua 将调用所有被标记了需要触发终结器对象的终结过程，
 <h2>2.6 &ndash; <a name="2.6">协程</a></h2>
 
 <p>
-Lua 支持协程，同时它也被称为 <em>协同式多线程</em>。
-Lua 为每个协程提供一个独立的运行序。
-然而和多线程系统中的线程不同，
-协程仅在显式地调用一个让出函数时才挂起当前的执行状态。
+Lua 支持协程，也叫 <em>协同式多线程</em>。
+一个协程在 Lua 中代表了一段独立的执行线程。
+然而，与多线程系统中的线程的区别在于，
+协程仅在显式调用一个让出（yield）函数时才挂起当前的执行。
 
 
 <p>
-通过调用
+调用函数
 <a href="#pdf-coroutine.create"><code>coroutine.create</code></a>
 可创建一个协程。
-它唯一的参数是一个函数，这个函数将作为这个协程的主函数。
-<code>create</code> 函数仅仅创建出这个协程然后返回它的句柄
-（一个类型为 <em>thread</em> 的对象）；
-它并不运行该协程。
+其唯一的参数是该协程的主函数。
+<code>create</code> 函数只负责新建一个协程并返回其句柄
+（一个 <em>thread</em> 类型的对象）；
+而不会启动该协程。
 
 
 <p>
-通过调用
+调用
 <a href="#pdf-coroutine.resume"><code>coroutine.resume</code></a>
-可执行一个协程。
+函数执行一个协程。
 第一次调用
 <a href="#pdf-coroutine.resume"><code>coroutine.resume</code></a>
 时，第一个参数应传入
 <a href="#pdf-coroutine.create"><code>coroutine.create</code></a>
-返回的线程对象，这样协程就会从其主函数的第一行开始执行。
+返回的线程对象，然后协程从其主函数的第一行开始执行。
+传递给
 <a href="#pdf-coroutine.resume"><code>coroutine.resume</code></a>
-后面的参数将作为主函数的参数传入。
-协程将一直运行到它结束或 <em>让出</em>。
+的其他参数将作为协程主函数的参数传入。
+协程启动之后，将一直运行到它终止或 <em>让出</em>。
 
 
 <p>
@@ -802,40 +793,38 @@ Lua 为每个协程提供一个独立的运行序。
 
 
 <p>
-让出协程的执行通过调用
-<a href="#pdf-coroutine.yield"><code>coroutine.yield</code></a> 完成。
-当协程让出，
-即使让出发生在内嵌函数调用中
-（即不在主函数，但在主函数直接或间接调用的函数内部），
-之前对该协程调用的 <a href="#pdf-coroutine.resume"><code>coroutine.resume</code></a> 会立刻返回。
-在让出的情况下，
-<a href="#pdf-coroutine.resume"><code>coroutine.resume</code></a> 依旧返回 <b>true</b>，
-接下来的返回值是传给
-<a href="#pdf-coroutine.yield"><code>coroutine.yield</code></a> 的那些参数。
-当下一次你延续同一个协程时，
-协程会接在让出点继续运行。
-调用 <a href="#pdf-coroutine.yield"><code>coroutine.yield</code></a>
-的让出点会返回传给
+通过调用
+<a href="#pdf-coroutine.yield"><code>coroutine.yield</code></a> 使协程暂停执行，让出执行权。
+协程让出时，对应的最近 <a href="#pdf-coroutine.resume"><code>coroutine.resume</code></a> 
+函数会立刻返回，即使该让出操作发生在内嵌函数调用中
+（即不在主函数，但在主函数直接或间接调用的函数内部）。
+在协程让出的情况下，
+<a href="#pdf-coroutine.resume"><code>coroutine.resume</code></a> 也会返回 <b>true</b>，
+并加上传给
+<a href="#pdf-coroutine.yield"><code>coroutine.yield</code></a> 的参数。
+当下次重启同一个协程时，
+协程会接着从让出点继续执行。
+此时，此前让出点处对 <a href="#pdf-coroutine.yield"><code>coroutine.yield</code></a> 的调用
+会返回，返回值为传给
 <a href="#pdf-coroutine.resume"><code>coroutine.resume</code></a>
-的额外参数。
+的第一个参数之外的其他参数。
 
 
 <p>
-就像
-<a href="#pdf-coroutine.create"><code>coroutine.create</code></a> 那样，
+与
+<a href="#pdf-coroutine.create"><code>coroutine.create</code></a> 类似，
 <a href="#pdf-coroutine.wrap"><code>coroutine.wrap</code></a> 函数也会创建一个协程。
-不同的是，它不返回协程本身，而是返回一个函数。
-调用这个函数将延续这个协程。
-为这个函数提供的参数相当于
-传给 <a href="#pdf-coroutine.resume"><code>coroutine.resume</code></a> 的额外参数。
+不同之处在于，它不返回协程本身，而是返回一个函数。
+调用这个函数将启动该协程。
+传递给该函数的任何参数均当作 <a href="#pdf-coroutine.resume"><code>coroutine.resume</code></a> 的额外参数。
 <a href="#pdf-coroutine.wrap"><code>coroutine.wrap</code></a>
-的返回值是
+返回
 <a href="#pdf-coroutine.resume"><code>coroutine.resume</code></a>
-的返回值中除去第一个返回值（布尔型的错误码）剩余的部分。
+的所有返回值，除了第一个返回值（布尔型的错误码）。
 和 <a href="#pdf-coroutine.resume"><code>coroutine.resume</code></a> 不同，
 <a href="#pdf-coroutine.wrap"><code>coroutine.wrap</code></a>
 不会捕获错误；
-错误会传播给调用者。
+而是将任何错误都传播给调用者。
 
 
 <p>
@@ -1758,7 +1747,7 @@ C API 同样会按需把整数转换为浮点数以及
 
 
 <p>
-从数字转换为字符串使用非制定的人可读的格式。
+从数字转换为字符串使用非指定的人可读的格式。
 若想完全控制数字到字符串的转换过程，
 可以使用字符串库中的 <code>format</code> 函数
 （参见 <a href="#pdf-string.format"><code>string.format</code></a>）。
@@ -2242,7 +2231,7 @@ Lua 语言有词法作用范围。
 
 <p>
 因为有这样一个词法作用范围的规则，
-局部变量可以被在它的作为范围内定义的函数自由使用。
+局部变量可以被在它的作用范围内定义的函数自由使用。
 当一个局部变量被内层的函数中使用的时候，
 它被内层函数称作 <em>上值</em>，或是 <em>外部局部变量</em>。
 
@@ -2311,7 +2300,7 @@ Lua 使用一个 <em>虚拟栈</em> 来和 C 互传值。
 方便起见，
 所有针对栈的 API 查询操作都不严格遵循栈的操作规则。
 而是可以用一个 <em>索引</em> 来指向栈上的任何元素：
-正的索引指的是栈上的绝对位置（从一开始）；
+正的索引指的是栈上的绝对位置（从1开始）；
 负的索引则指从栈顶开始的偏移量。
 展开来说，如果堆栈有 <em>n</em> 个元素，
 那么索引 1 表示第一个元素
@@ -2396,7 +2385,7 @@ API 中的函数若需要传入栈索引，这个索引必须是
 
 
 <p>
-对于那些以可接受索引调用的函数，
+对于那可以接受索引调用的函数，
 无效索引被看作包含了一个虚拟类型
 <a name="pdf-LUA_TNONE"><code>LUA_TNONE</code></a> 的值，
 这个值的行为和 nil 一致。
@@ -2496,7 +2485,7 @@ Lua 会先调用 <em>panic 函数</em> （参见 <a href="#lua_atpanic"><code>lu
 然后调用 <code>abort</code> 来退出宿主程序。
 你的 panic 函数只要不返回
 （例如：长跳转到你在 Lua 外你自己设置的恢复点）
-就可以必须退出程序。
+就可以不退出程序。
 
 
 <p>
@@ -2591,7 +2580,7 @@ Lua 就无法返回到 <code>foo</code> 里了。
 之后做的那些事情。
 现在我们必须通知 Lua 说，你必须在被
 <a href="#lua_pcall"><code>lua_pcall</code></a>
-执行得 Lua 代码发生过中断（错误或让出）后，
+执行的 Lua 代码发生过中断（错误或让出）后，
 还得继续调用 <code>k</code> 。
 所以我们还得继续改写这段代码，把
 <a href="#lua_pcall"><code>lua_pcall</code></a> 替换成
@@ -2609,7 +2598,7 @@ Lua 仅在需要时，这可能是由错误导致的也可能是发生了让出�
 如果没有发生过任何让出，调用的函数正常返回，
 那么 <a href="#lua_pcallk"><code>lua_pcallk</code></a>
 （以及 <a href="#lua_callk"><code>lua_callk</code></a>）也会正常返回。
-（当然，这个例子中你也可以不再之后调用延续函数，
+（当然，这个例子中你也可以不在之后调用延续函数，
 而是在原函数的调用后直接写上需要做的工作。）
 
 
@@ -3595,7 +3584,7 @@ Lua 将通过这个函数做状态机内所有的内存分配操作。
 <pre>void *lua_newuserdata (lua_State *L, size_t size);</pre>
 
 <p>
-这个函数分配分配一块指定大小的内存块，
+这个函数分配一块指定大小的内存块，
 把内存块地址作为一个完全用户数据压栈，
 并返回这个地址。
 
@@ -3652,7 +3641,7 @@ Lua 中浮点数的类型。
 
 
 <p>
-Lua 中数字的类型。确省是 double ，但是你改成 float 。
+Lua 中数字的类型。缺省是 double ，但是你可以改成 float 。
 （参见 <code>luaconf.h</code> 中的 <code>LUA_REAL</code> 。）
 
 
@@ -3859,7 +3848,7 @@ Lua 中数字的类型。确省是 double ，但是你改成 float 。
 '<code>%%</code>' （插入一个字符 '<code>%</code>'），
 '<code>%s</code>' （插入一个带零终止符的字符串，没有长度限制）,
 '<code>%f</code>' （插入一个 <a href="#lua_Number"><code>lua_Number</code></a>），
-'<code>%L</code>' （插入一个 <a href="#lua_Integer"><code>lua_Integer</code></a>），
+'<code>%I</code>' （插入一个 <a href="#lua_Integer"><code>lua_Integer</code></a>），
 '<code>%p</code>' （插入一个指针或是一个十六进制数），
 '<code>%d</code>' （插入一个 <code>int</code>），
 '<code>%c</code>' （插入一个用 <code>int</code> 表示的单字节字符），以及
@@ -3914,7 +3903,7 @@ Lua 中数字的类型。确省是 double ，但是你改成 float 。
 <pre>const char *lua_pushliteral (lua_State *L, const char *s);</pre>
 
 <p>
-这个宏等价于 <a href="#lua_pushlstring"><code>lua_pushlstring</code></a>，
+这个宏等价于 <a href="#lua_pushstring"><code>lua_pushstring</code></a>，
 区别仅在于只能在 <code>s</code> 是一个字面量时才能用它。
 它会自动给出字符串的长度。
 
@@ -3965,7 +3954,7 @@ Lua 对这个字符串做一个内部副本（或是复用一个副本），
 <pre>const char *lua_pushstring (lua_State *L, const char *s);</pre>
 
 <p>
-将指针 s 指向的零结尾的字符串压栈。
+将指针 s 指向的零结尾的字符串压栈。Lua 对这个字符串做一个内部副本（或是复用一个副本），
 因此 <code>s</code> 处的内存在函数返回后，可以释放掉或是立刻重用于其它用途。
 
 
@@ -4478,7 +4467,7 @@ Lua 库是完全可重入的：
 如果 <code>len</code> 不为 <code>NULL</code> ，
 它还把字符串长度设到 <code>*len</code> 中。
 这个 Lua 值必须是一个字符串或是一个数字； 
-否则返回返回 <code>NULL</code> 。
+否则返回 <code>NULL</code> 。
 如果值是一个数字， <code>lua_tolstring</code>
 还会 <em>把堆栈中的那个值的实际类型转换为一个字符串</em>。
 （当遍历一张表的时候，
@@ -4859,7 +4848,7 @@ Lua 没有内置的调试机制。
 </li>
 
 <li><b><code>nparams</code>: </b>
-函数固定行参个数
+函数固定形参个数
 （对于 C 函数永远是 0 ）。
 </li>
 
@@ -6334,9 +6323,9 @@ Lua 把这些事件定义为以下常量：
 
 <li>输入输出 (<a href="#6.8">&sect;6.8</a>);</li>
 
-<li>操作系统设施 (<a href="#6.9">&sect;6.9</a>);</li>
+<li>操作系统库 (<a href="#6.9">&sect;6.9</a>);</li>
 
-<li>调试设施 (<a href="#6.10">&sect;6.10</a>).</li>
+<li>调试库 (<a href="#6.10">&sect;6.10</a>).</li>
 
 </ul><p>
 除了基础库和包管理库，
@@ -6891,7 +6880,7 @@ Lua 不会对二进制代码块做健壮性检查。
 以字符串形式返回协程 <code>co</code> 的状态：
 当协程正在运行（它就是调用 <code>status</code> 的那个） ，返回 <code>"running"</code>；
 如果协程调用 <code>yield</code> 挂起或是还没有开始运行，返回 <code>"suspended"</code>；
-如果协程是活动的，都并不在运行（即它正在延续其它协程），返回 <code>"normal"</code>；
+如果协程是活动的，但并不在运行（即它正在延续其它协程），返回 <code>"normal"</code>；
 如果协程运行完主体函数或因错误停止，返回 <code>"dead"</code>。
 
 
@@ -6930,7 +6919,7 @@ Lua 不会对二进制代码块做健壮性检查。
 <h2>6.3 &ndash; <a name="6.3">模块</a></h2>
 
 <p>
-包管理库提供了从 Lua 中加载模块的基础设施。
+包管理库提供了从 Lua 中加载模块的基础库。
 只有一个导出函数直接放在全局环境中：
 <a href="#pdf-require"><code>require</code></a>。
 所有其它的部分都导出在表 <a name="pdf-package"><code>package</code></a> 中。
@@ -6951,7 +6940,7 @@ Lua 不会对二进制代码块做健壮性检查。
 <p>
 
 <code>require</code> 遵循 <a href="#pdf-package.searchers"><code>package.searchers</code></a> 序列的指引来查找加载器。
-如果改变这个序列，我们可以改变 <code>require</code> 如果查找一个模块。
+如果改变这个序列，我们可以改变 <code>require</code> 如何查找一个模块。
 下列说明基于 <a href="#pdf-package.searchers"><code>package.searchers</code></a>
 的默认配置。
 
@@ -7901,7 +7890,7 @@ Lua 中的匹配模式直接用常规的字符串来描述。
 
 <p>
 <hr><h3><a name="pdf-utf8.codepoint"><code>utf8.codepoint (s [, i [, j]])</code></a></h3>
-一整数形式返回 <code>s</code> 中
+以整数形式返回 <code>s</code> 中
 从位置 <code>i</code> 到 <code>j</code> 间（包括两端）
 所有字符的编号。
 默认的 <code>i</code> 为 1 ，默认的 <code>j</code> 为 <code>i</code>。
@@ -8277,7 +8266,7 @@ UTF-8 字符的个数。
 当以两个整数 <code>m</code> 与 <code>n</code> 调用时，
 <code>math.random</code> 返回一个 <em>[m, n]</em> 区间
 内一致分布的整数伪随机数。
-（值 <em>m-n</em> 不能是负数，且必须在 Lua 整数的表示范围内。）
+（值 <em>n-m</em> 不能是负数，且必须在 Lua 整数的表示范围内。）
 调用 <code>math.random(n)</code> 等价于 <code>math.random(1,n)</code>。
 
 
@@ -8361,7 +8350,7 @@ UTF-8 字符的个数。
 
 
 
-<h2>6.8 &ndash; <a name="6.8">输入输出设施</a></h2>
+<h2>6.8 &ndash; <a name="6.8">输入输出库</a></h2>
 
 <p>
 I/O 库提供了两套不同风格的文件处理接口。
@@ -8525,7 +8514,7 @@ I/O 函数在出错时都返回 <b>nil</b>
 
 
 <p>
-返回一个临时文件的句柄。
+如果成功，返回一个临时文件的句柄。
 这个文件以更新模式打开，在程序结束时会自动删除。
 
 
@@ -8629,10 +8618,6 @@ I/O 函数在出错时都返回 <b>nil</b>
 就中止函数运行，返回 <b>nil</b>。
 </li>
 
-<li><b>"<code>i</code>": </b>
-读取一个整数，返回整数值。
-</li>
-
 <li><b>"<code>a</code>": </b>
 从当前位置开始读取整个文件。
 如果已在文件末尾，返回空串。
@@ -8670,11 +8655,11 @@ I/O 函数在出错时都返回 <b>nil</b>
 设置及获取基于文件开头处计算出的位置。
 设置的位置由 <code>offset</code> 和
 <code>whence</code> 字符串 <code>whence</code>
-制定的基点决定。基点可以是：
+指定的基点决定。基点可以是：
 
 <ul>
 <li><b>"<code>set</code>": </b> 基点为 0 （文件开头）；</li>
-<li><b>"<code>cur</code>": </b> 基点为当前位置了；</li>
+<li><b>"<code>cur</code>": </b> 基点为当前位置；</li>
 <li><b>"<code>end</code>": </b> 基点为文件尾；</li>
 </ul><p>
 当 <code>seek</code> 成功时，返回最终从文件开头计算起的文件的位置。
@@ -8712,7 +8697,7 @@ I/O 函数在出错时都返回 <b>nil</b>
 
 <li><b>"<code>line</code>": </b>
 行缓冲；
-输出将到每次换行前，
+输出将缓冲到每次换行前，
 对于某些特殊文件（例如终端设备）缓冲到任何输入前。
 </li>
 
@@ -8743,7 +8728,7 @@ I/O 函数在出错时都返回 <b>nil</b>
 
 
 
-<h2>6.9 &ndash; <a name="6.9">操作系统设施</a></h2>
+<h2>6.9 &ndash; <a name="6.9">操作系统库</a></h2>
 
 <p>
 这个库都通过表 <a name="pdf-os"><code>os</code></a> 实现。
@@ -8828,7 +8813,7 @@ I/O 函数在出错时都返回 <b>nil</b>
 这个函数等价于 ISO C 函数 <code>system</code>。
 它调用系统解释器执行 <code>command</code>。
 如果命令成功运行完毕，第一个返回值就是 <b>true</b>，
-否则是 <b>nil</b> otherwise。
+否则是 <b>nil</b>。
 在第一个返回值之后，函数返回一个字符串加一个数字。如下：
 <ul>
 
@@ -9207,7 +9192,7 @@ Lua 程序不会崩溃），
 
 
 <p>
-将 <code>value</code> （可以是 <b>nil</b>） 设为 <code>table</code> 的元表。
+将 <code>value</code> 的元表设为 <code>table</code> （可以是 <b>nil</b>）。
 返回 <code>value</code>。
 
 
@@ -9520,7 +9505,7 @@ Lua 5.2 到 Lua 5.3 最大的变化是引入了数字的整数子类型。
 数学库中的这些函数废弃了：
 <code>atan2</code>， <code>cosh</code>， <code>sinh</code>， <code>tanh</code>， <code>pow</code>，
 <code>frexp</code>， 以及 <code>ldexp</code> 。
-你可以用 <code>x^y</code> 替换 <code>math.pow(x,y)；
+你可以用 <code>x^y</code> 替换 <code>math.pow(x,y)</code>；
 你可以用 <code>math.atan</code> 替换 <code>math.atan2</code>，前者现在可以接收一或两个参数；
 你可以用 <code>x * 2.0^exp</code> 替换 <code>math.ldexp(x,exp)</code>。
 若用到其它操作，你可以写一个扩展库，或在 Lua 中实现它们。
